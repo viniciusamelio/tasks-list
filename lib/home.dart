@@ -129,11 +129,14 @@ class _HomeState extends State<Home> {
             ),
             Container(
               height: 550 ,
-                    child: ListView.builder(
+                    child: RefreshIndicator(
+                      onRefresh: _refresh,
+                      child: ListView.builder(
                       padding: EdgeInsets.only(top:10),
                       itemCount: _toDoList.length,
                       itemBuilder: BuildTile,
                     ),
+                    )
                   ),                  
             
           ],
@@ -161,6 +164,19 @@ class _HomeState extends State<Home> {
     } catch (e) {
       return null;
     }
+  }
+
+ Future <Null> _refresh() async {
+   await Future.delayed(Duration(seconds: 1));
+   
+   setState(() {
+     _saveData(); 
+     _toDoList.sort((a,b){
+      if(a["ok"] && !b["ok"]) return 1;
+      else if(!a["ok"] && b["ok"] ) return -1;
+      else return 0;
+      });
+   });
   }
 }
 
